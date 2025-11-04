@@ -141,14 +141,14 @@
 /// Right section for the justified headers
 /// - body (content): The body of the right header
 #let secondary-right-header(body) = {
-  set text(size: 11pt, weight: "medium")
+  set text(size: 11pt, weight: "semibold")
   body
 }
 
 /// Right section of a tertiaty headers.
 /// - body (content): The body of the right header
 #let tertiary-right-header(body) = {
-  set text(weight: "light", size: 9pt)
+  set text(weight: "medium", size: 9pt)
   body
 }
 
@@ -221,11 +221,7 @@
 
   let desc = if description == none {
     (
-      lflib._linguify("resume", lang: language, from: lang_data).ok
-        + " "
-        + author.firstname
-        + " "
-        + author.lastname
+      lflib._linguify("resume", lang: language, from: lang_data).ok + " " + author.firstname + " " + author.lastname
     )
   } else {
     description
@@ -251,6 +247,7 @@
 
   set page(
     paper: paper-size,
+    /*
     margin: (left: 15mm, right: 15mm, top: 10mm, bottom: 10mm),
     footer: if show-footer [#__resume_footer(
       author,
@@ -260,6 +257,7 @@
       use-smallcaps: use-smallcaps,
     )] else [],
     footer-descent: 0pt,
+    */
   )
 
   // set paragraph spacing
@@ -277,7 +275,7 @@
       color-darkgray
     }
     #text[#strong[#text(color)[#it.body]]]
-    #box(width: 1fr, line(length: 100%))
+    #box(width: 1fr, baseline: -0.5pt, line(length: 100%, stroke: 1pt + accent-color))
   ]
 
   show heading.where(level: 2): it => {
@@ -296,11 +294,10 @@
         #block[
           #set text(size: 32pt, style: "normal", font: header-font)
           #if language == "zh" or language == "ja" [
-            #text(accent-color, weight: "bold")[#author.lastname]#text(
-              weight: "thin",
-            )[#author.firstname]
+            #text(weight: "bold")[#author.lastname]
+            #text(weight: "bold")[#author.firstname]
           ] else [
-            #text(accent-color, weight: "thin")[#author.firstname]
+            #text(weight: "bold")[#author.firstname]
             #text(weight: "bold")[#author.lastname]
           ]
         ]
@@ -408,8 +405,7 @@
           ]
           #if ("website" in author) [
             #separator
-            #website-icon
-            #box[#link(author.website)[#author.website]]
+            #box[#website-icon #link(author.website)[#author.website]]
           ]
           #if ("custom" in author and type(author.custom) == array) [
             #for item in author.custom [
@@ -469,10 +465,10 @@
 /// This formats the item for the resume entries. Typically your body would be a bullet list of items. Could be your responsibilities at a company or your academic achievements in an educational background section.
 /// - body (content): The body of the resume entry
 #let resume-item(body) = {
-  set text(size: 10pt, style: "normal", weight: "light", fill: color-darknight)
+  set text(size: 10pt, style: "normal", weight: "regular", fill: color-darknight)
   set block(above: 0.75em, below: 1.25em)
   set par(leading: 0.65em)
-  block(above: 0.5em)[
+  block(above: 0.8em)[
     #body
   ]
 }
@@ -514,7 +510,7 @@
 /// *Example:*
 /// #example(`resume.resume-gpa("3.5", "4.0")`)
 #let resume-gpa(numerator, denominator) = {
-  set text(size: 12pt, style: "italic", weight: "light")
+  set text(size: 12pt, style: "italic", weight: "regular")
   text[Cumulative GPA: #box[#strong[#numerator] / #denominator]]
 }
 
@@ -540,7 +536,7 @@
 /// - values (array): The skills to display
 #let resume-skill-values(values) = {
   align(left)[
-    #set text(size: 11pt, style: "normal", weight: "light")
+    #set text(size: 11pt, style: "normal", weight: "regular")
     // This is a list so join by comma (,)
     #values.join(", ")
   ]
@@ -589,7 +585,7 @@
 
 #let default-closing(lang-data) = {
   align(bottom)[
-    #text(weight: "light", style: "italic")[
+    #text(weight: "regular", style: "italic")[
       #linguify("attached", from: lang-data)#sym.colon #linguify(
         "curriculum-vitae",
         from: lang-data,
@@ -657,9 +653,7 @@
   show: body => context {
     set document(
       author: author.firstname + " " + author.lastname,
-      title: lflib
-        ._linguify("cover-letter", lang: language, from: lang_data)
-        .ok,
+      title: lflib._linguify("cover-letter", lang: language, from: lang_data).ok,
       description: desc,
       keywords: keywords,
     )
@@ -813,7 +807,7 @@
 
 
     align(right)[
-      #set text(size: 8pt, weight: "light", style: "normal")
+      #set text(size: 8pt, weight: "regular", style: "normal")
       #author_list.join(separator)
     ]
   }
@@ -847,7 +841,7 @@
         #if ("signature" in author) {
           author.signature
         }
-        #text(weight: "light")[#linguify("sincerely", from: lang_data)#if (
+        #text(weight: "regular")[#linguify("sincerely", from: lang_data)#if (
             language != "de"
           ) [#sym.comma]] \
         #text(weight: "bold")[#author.firstname #author.lastname] \ \
@@ -876,7 +870,7 @@
     #__justify_align[
       #text(weight: "bold", size: 12pt)[#entity-info.target]
     ][
-      #text(weight: "light", style: "italic", size: 9pt)[#date]
+      #text(weight: "regular", style: "italic", size: 9pt)[#date]
     ]
 
     #pad(top: 0.65em, bottom: 0.65em)[
@@ -904,7 +898,7 @@
       ) #job-position]
   ]
   pad(top: 1em, bottom: 1em)[
-    #text(weight: "light", fill: color-gray)[
+    #text(weight: "regular", fill: color-gray)[
       #if dear == "" [
         #linguify("dear", from: lang_data)
       ] else [
@@ -920,7 +914,7 @@
 #let coverletter-content(content) = {
   pad(top: 1em, bottom: 1em)[
     #set par(first-line-indent: 3em)
-    #set text(weight: "light")
+    #set text(weight: "regular")
     #content
   ]
 }
